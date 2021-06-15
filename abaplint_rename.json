@@ -16,7 +16,7 @@
   ],
   "rename": {
     "output": "output",
-    "patterns": [{"type": "CLAS|INTF", "oldName": "z(.*)_ajson", "newName": "/mbtools/$1_ajson"}]
+    "patterns": [{"type": "CLAS|INTF", "oldName": "Z(.*)_AJSON", "newName": "/MBTOOLS/$1_AJSON"}]
   },
   "syntax": {
     "version": "v702",

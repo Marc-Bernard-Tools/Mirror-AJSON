@@ -1,0 +1,27 @@
+{
+  "name": "ajson_mirror",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Mirror of (ajson)[https://github.com/sbcgua/ajson] mirror to /mbtools/cl_ namespace",
+  "main": "index.js",
+  "scripts": {
+    "clone": "git clone https://github.com/sbcgua/ajson input",
+    "lint_result": "abaplint abaplint.json",
+    "fix_result": "abaplint abaplint.json --fix",
+    "rename": "abaplint abaplint_rename.json --rename && rm src/* && cp output/input/src/* src/",
+    "mirror": "rm -rf input && rm -rf output && npm run clone && npm run rename && npm run fix_result"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marc-Bernard-Tools/Mirror-AJSON.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Marc-Bernard-Tools/Mirror-AJSON/issues"
+  },
+  "homepage": "htthttps://github.com/Marc-Bernard-Tools/Mirror-AJSON#readme",
+  "dependencies": {
+    "@abaplint/cli": "^2.74.32"
+  }
+}

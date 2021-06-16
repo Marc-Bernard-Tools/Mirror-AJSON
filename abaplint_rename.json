@@ -87,7 +87,7 @@
     "in_statement_indentation": false,
     "indentation": {
       "ignoreExceptions": false
-    }.
+    },
     "inline_data_old_versions": true,
     "keep_single_parameter_on_one_line": {
       "exclude": [],
@@ -96,7 +96,7 @@
     },
     "keyword_case": {
       "ignoreExceptions": false
-    }.
+    },
     "line_break_multiple_parameters": false,
     "line_break_style": true,
     "line_length": false,

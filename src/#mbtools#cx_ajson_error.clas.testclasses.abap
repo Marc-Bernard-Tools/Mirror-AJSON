@@ -1,52 +1,52 @@
-class ltcl_error definition
-  for testing
-  risk level harmless
-  duration short
-  final.
+CLASS ltcl_error DEFINITION
+  FOR TESTING
+  RISK LEVEL HARMLESS
+  DURATION SHORT
+  FINAL.
 
-  private section.
+  PRIVATE SECTION.
 
-    methods raise for testing.
-    methods raise_w_location for testing.
+    METHODS raise FOR TESTING.
+    METHODS raise_w_location FOR TESTING.
 
-endclass.
+ENDCLASS.
 
-class ltcl_error implementation.
+CLASS ltcl_error IMPLEMENTATION.
 
-  method raise.
+  METHOD raise.
 
-    data lx type ref to /mbtools/cx_ajson_error.
-    data lv_msg type string.
+    DATA lx TYPE REF TO /mbtools/cx_ajson_error.
+    DATA lv_msg TYPE string.
 
     lv_msg = repeat( val = 'a'
                      occ = 50 ) && repeat( val = 'b'
                                            occ = 50 ) && '123'.
 
-    try.
-      /mbtools/cx_ajson_error=>raise( lv_msg ).
-      cl_abap_unit_assert=>fail( ).
-    catch /mbtools/cx_ajson_error into lx.
-      cl_abap_unit_assert=>assert_equals(
+    TRY.
+        /mbtools/cx_ajson_error=>raise( lv_msg ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH /mbtools/cx_ajson_error INTO lx.
+        cl_abap_unit_assert=>assert_equals(
         exp = lv_msg
         act = lx->get_text( ) ).
-    endtry.
+    ENDTRY.
 
-  endmethod.
+  ENDMETHOD.
 
-  method raise_w_location.
+  METHOD raise_w_location.
 
-    data lx type ref to /mbtools/cx_ajson_error.
+    DATA lx TYPE REF TO /mbtools/cx_ajson_error.
 
-    try.
-      /mbtools/cx_ajson_error=>raise( iv_msg = 'a'
-                                      iv_location = 'b' ).
-      cl_abap_unit_assert=>fail( ).
-    catch /mbtools/cx_ajson_error into lx.
-      cl_abap_unit_assert=>assert_equals(
+    TRY.
+        /mbtools/cx_ajson_error=>raise( iv_msg = 'a'
+                                        iv_location = 'b' ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH /mbtools/cx_ajson_error INTO lx.
+        cl_abap_unit_assert=>assert_equals(
         exp = 'a @b'
         act = lx->get_text( ) ).
-    endtry.
+    ENDTRY.
 
-  endmethod.
+  ENDMETHOD.
 
-endclass.
+ENDCLASS.

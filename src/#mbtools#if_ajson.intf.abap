@@ -1,7 +1,7 @@
 INTERFACE /mbtools/if_ajson
   PUBLIC .
 
-  CONSTANTS version TYPE string VALUE 'v1.0.3'.
+  CONSTANTS version TYPE string VALUE 'v1.0.4'.
   CONSTANTS origin TYPE string VALUE 'https://github.com/sbcgua/ajson'.
 
   INTERFACES /mbtools/if_ajson_reader.

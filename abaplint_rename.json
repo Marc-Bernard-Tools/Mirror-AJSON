@@ -85,14 +85,34 @@
     "if_in_if": true,
     "implement_methods": true,
     "in_statement_indentation": false,
-    "indentation": false,
+    "indentation": {
+      "exclude": [],
+      "severity": "Error",
+      "alignTryCatch": false,
+      "globalClassSkipFirst": false,
+      "ignoreExceptions": false,
+      "ignoreGlobalClassDefinition": false,
+      "ignoreGlobalInterface": false,
+      "selectionScreenBlockIndentation": false
+    },
     "inline_data_old_versions": true,
     "keep_single_parameter_on_one_line": {
       "exclude": [],
       "severity": "Error",
       "length": 120
     },
-    "keyword_case": false,
+    "keyword_case": {
+      "exclude": [],
+      "severity": "Error",
+      "ignoreExceptions": false,
+      "ignoreFunctionModuleName": false,
+      "ignoreGlobalClassBoundaries": false,
+      "ignoreGlobalClassDefinition": false,
+      "ignoreGlobalInterface": false,
+      "ignoreKeywords": [],
+      "ignoreLowerClassImplmentationStatement": true,
+      "style": "upper"
+    },
     "line_break_multiple_parameters": false,
     "line_break_style": true,
     "line_length": false,

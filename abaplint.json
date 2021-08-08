@@ -82,6 +82,8 @@
     "implement_methods": true,
     "in_statement_indentation": false,
     "indentation": {
+      "exclude": [],
+      "severity": "Error",
       "alignTryCatch": false,
       "globalClassSkipFirst": false,
       "ignoreExceptions": false,
@@ -96,6 +98,8 @@
       "length": 120
     },
     "keyword_case": {
+      "exclude": [],
+      "severity": "Error",
       "ignoreExceptions": false,
       "ignoreFunctionModuleName": false,
       "ignoreGlobalClassBoundaries": false,

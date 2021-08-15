@@ -30,9 +30,9 @@ CLASS /mbtools/cl_ajson_utilities DEFINITION
 
     DATA mo_json_a TYPE REF TO /mbtools/if_ajson .
     DATA mo_json_b TYPE REF TO /mbtools/if_ajson .
-    DATA mo_insert TYPE REF TO /mbtools/if_ajson_writer .
-    DATA mo_delete TYPE REF TO /mbtools/if_ajson_writer .
-    DATA mo_change TYPE REF TO /mbtools/if_ajson_writer .
+    DATA mo_insert TYPE REF TO /mbtools/if_ajson .
+    DATA mo_delete TYPE REF TO /mbtools/if_ajson .
+    DATA mo_change TYPE REF TO /mbtools/if_ajson .
 
     METHODS diff_a_b
       IMPORTING

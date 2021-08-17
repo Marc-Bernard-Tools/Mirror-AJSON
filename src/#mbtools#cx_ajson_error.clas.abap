@@ -9,17 +9,17 @@ CLASS /mbtools/cx_ajson_error DEFINITION
     INTERFACES if_t100_message .
 
     TYPES:
-    ty_rc TYPE c LENGTH 4 .
+      ty_rc TYPE c LENGTH 4 .
 
     CONSTANTS:
-    BEGIN OF zcx_ajson_error,
+      BEGIN OF zcx_ajson_error,
       msgid TYPE symsgid VALUE '00',
       msgno TYPE symsgno VALUE '001',
       attr1 TYPE scx_attrname VALUE 'A1',
       attr2 TYPE scx_attrname VALUE 'A2',
       attr3 TYPE scx_attrname VALUE 'A3',
       attr4 TYPE scx_attrname VALUE 'A4',
-    END OF zcx_ajson_error .
+      END OF zcx_ajson_error .
     DATA rc TYPE ty_rc READ-ONLY .
     DATA message TYPE string READ-ONLY .
     DATA location TYPE string READ-ONLY .
@@ -29,7 +29,7 @@ CLASS /mbtools/cx_ajson_error DEFINITION
     DATA a4 TYPE symsgv READ-ONLY .
 
     METHODS constructor
-    IMPORTING
+      IMPORTING
       !textid LIKE if_t100_message=>t100key OPTIONAL
       !previous LIKE previous OPTIONAL
       !rc TYPE ty_rc OPTIONAL
@@ -40,10 +40,10 @@ CLASS /mbtools/cx_ajson_error DEFINITION
       !a3 TYPE symsgv OPTIONAL
       !a4 TYPE symsgv OPTIONAL .
     CLASS-METHODS raise
-    IMPORTING
+      IMPORTING
       !iv_msg TYPE string
       !iv_location TYPE string OPTIONAL
-    RAISING
+      RAISING
       /mbtools/cx_ajson_error .
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -56,9 +56,9 @@ CLASS /mbtools/cx_ajson_error IMPLEMENTATION.
 
   METHOD constructor.
     CALL METHOD super->constructor
-EXPORTING
-previous = previous
-.
+      EXPORTING
+      previous = previous
+      .
     me->rc = rc .
     me->message = message .
     me->location = location .
@@ -78,12 +78,12 @@ previous = previous
   METHOD raise.
 
     DATA:
-    BEGIN OF ls_msg,
+      BEGIN OF ls_msg,
       a1 LIKE a1,
       a2 LIKE a1,
       a3 LIKE a1,
       a4 LIKE a1,
-    END OF ls_msg.
+      END OF ls_msg.
 
     IF iv_location IS INITIAL.
       ls_msg = iv_msg.
@@ -94,7 +94,7 @@ previous = previous
     ENDIF.
 
     RAISE EXCEPTION TYPE /mbtools/cx_ajson_error
-    EXPORTING
+      EXPORTING
       textid   = zcx_ajson_error
       message  = iv_msg
       location = iv_location

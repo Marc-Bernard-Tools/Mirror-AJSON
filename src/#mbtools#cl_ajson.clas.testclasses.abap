@@ -137,11 +137,11 @@ CLASS ltcl_parser_test IMPLEMENTATION.
         cl_abap_unit_assert=>fail( 'Parsing of string w/o quotes must fail (spec)' ).
       CATCH /mbtools/cx_ajson_error INTO lx_err.
         cl_abap_unit_assert=>assert_char_cp(
-        act = lx_err->get_text( )
-        exp = '*parsing error*' ).
+          act = lx_err->get_text( )
+          exp = '*parsing error*' ).
         cl_abap_unit_assert=>assert_char_cp(
-        act = lx_err->location
-        exp = '@PARSER' ).
+          act = lx_err->location
+          exp = '@PARSER' ).
     ENDTRY.
 
   ENDMETHOD.
@@ -583,13 +583,13 @@ CLASS ltcl_serializer_test IMPLEMENTATION.
       it_json_tree = lo_nodes->sorted( )
       iv_indent    = 2 ).
     lv_exp = '[\n' &&
-    '  123,\n' &&
-    '  {\n' &&
-    '    "a": 1,\n' &&
-    '    "b": 2\n' &&
-    '  },\n' &&
-    '  123.45\n' &&
-    ']'.
+      '  123,\n' &&
+      '  {\n' &&
+      '    "a": 1,\n' &&
+      '    "b": 2\n' &&
+      '  },\n' &&
+      '  123.45\n' &&
+      ']'.
     lv_exp = replace(
       val = lv_exp
       sub = '\n'
@@ -1209,8 +1209,8 @@ CLASS ltcl_reader_test IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Path not found: /x' ).
+          act = lx->message
+          exp = 'Path not found: /x' ).
     ENDTRY.
 
     TRY.
@@ -1218,8 +1218,8 @@ CLASS ltcl_reader_test IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Array expected at: /' ).
+          act = lx->message
+          exp = 'Array expected at: /' ).
     ENDTRY.
 
     TRY.
@@ -1227,8 +1227,8 @@ CLASS ltcl_reader_test IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Array expected at: /a' ).
+          act = lx->message
+          exp = 'Array expected at: /a' ).
     ENDTRY.
 
     CREATE OBJECT lo_nodes.
@@ -1241,8 +1241,8 @@ CLASS ltcl_reader_test IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Cannot convert [object] to string at [/1]' ).
+          act = lx->message
+          exp = 'Cannot convert [object] to string at [/1]' ).
     ENDTRY.
 
   ENDMETHOD.
@@ -1421,8 +1421,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Index not found in table' ).
+          act = lx->message
+          exp = 'Index not found in table' ).
     ENDTRY.
 
     lr_ref = lo_cut->find_loc( iv_path = '/tab/3/a'
@@ -1440,8 +1440,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Index not found in table' ).
+          act = lx->message
+          exp = 'Index not found in table' ).
     ENDTRY.
 
   ENDMETHOD.
@@ -1462,8 +1462,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Path not found' ).
+          act = lx->message
+          exp = 'Path not found' ).
     ENDTRY.
 
     TRY.
@@ -1471,8 +1471,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Cannot assign to ref' ).
+          act = lx->message
+          exp = 'Cannot assign to ref' ).
     ENDTRY.
 
     TRY.
@@ -1480,8 +1480,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Need index to access tables' ).
+          act = lx->message
+          exp = 'Need index to access tables' ).
     ENDTRY.
 
     TRY.
@@ -1489,8 +1489,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Index not found in table' ).
+          act = lx->message
+          exp = 'Index not found in table' ).
     ENDTRY.
 
   ENDMETHOD.
@@ -1596,8 +1596,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Expected structure' ).
+          act = lx->message
+          exp = 'Expected structure' ).
     ENDTRY.
 
     TRY.
@@ -1609,8 +1609,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Expected table' ).
+          act = lx->message
+          exp = 'Expected table' ).
     ENDTRY.
 
     TRY.
@@ -1622,8 +1622,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Source is not a number' ).
+          act = lx->message
+          exp = 'Source is not a number' ).
     ENDTRY.
 
     TRY.
@@ -1635,8 +1635,8 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Unexpected date format' ).
+          act = lx->message
+          exp = 'Unexpected date format' ).
     ENDTRY.
 
   ENDMETHOD.
@@ -2139,67 +2139,67 @@ CLASS ltcl_writer_test IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Path [/a/1] already used and is not array' ).
+          act = lx->message
+          exp = 'Path [/a/1] already used and is not array' ).
     ENDTRY.
 
     " push to not array
     TRY.
         li_writer->push(
-        iv_path = '/a/1'
-        iv_val  = 123 ).
+          iv_path = '/a/1'
+          iv_val  = 123 ).
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Path [/a/1] is not array' ).
+          act = lx->message
+          exp = 'Path [/a/1] is not array' ).
     ENDTRY.
 
     " push to not array
     TRY.
         li_writer->push(
-        iv_path = '/x'
-        iv_val  = 123 ).
+          iv_path = '/x'
+          iv_val  = 123 ).
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Path [/x] does not exist' ).
+          act = lx->message
+          exp = 'Path [/x] does not exist' ).
     ENDTRY.
 
     " set array item with non-numeric key
     TRY.
         li_writer->set(
-        iv_path = '/a/abc/x'
-        iv_val  = 123 ).
+          iv_path = '/a/abc/x'
+          iv_val  = 123 ).
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Cannot add non-numeric key [abc] to array [/a/]' ).
+          act = lx->message
+          exp = 'Cannot add non-numeric key [abc] to array [/a/]' ).
     ENDTRY.
 
     TRY.
         li_writer->set(
-        iv_path = '/a/abc'
-        iv_val  = 123 ).
+          iv_path = '/a/abc'
+          iv_val  = 123 ).
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Cannot add non-numeric key [abc] to array [/a/]' ).
+          act = lx->message
+          exp = 'Cannot add non-numeric key [abc] to array [/a/]' ).
     ENDTRY.
 
     " set array item with zero key
     TRY.
         li_writer->set(
-        iv_path = '/a/0'
-        iv_val  = 123 ).
+          iv_path = '/a/0'
+          iv_val  = 123 ).
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error INTO lx.
         cl_abap_unit_assert=>assert_equals(
-        act = lx->message
-        exp = 'Cannot add zero key to array [/a/]' ).
+          act = lx->message
+          exp = 'Cannot add zero key to array [/a/]' ).
     ENDTRY.
 
   ENDMETHOD.
@@ -2466,8 +2466,8 @@ CLASS ltcl_writer_test IMPLEMENTATION.
 
     TRY.
         li_writer->set(
-        iv_path = '/c'
-        iv_val  = 'abc' ).
+          iv_path = '/c'
+          iv_val  = 'abc' ).
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error.
     ENDTRY.
@@ -2480,8 +2480,8 @@ CLASS ltcl_writer_test IMPLEMENTATION.
 
     TRY.
         li_writer->push(
-        iv_path = '/b'
-        iv_val  = 'xyz' ).
+          iv_path = '/b'
+          iv_val  = 'xyz' ).
         cl_abap_unit_assert=>fail( ).
       CATCH /mbtools/cx_ajson_error.
     ENDTRY.

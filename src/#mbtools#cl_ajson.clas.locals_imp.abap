@@ -143,8 +143,8 @@ CLASS lcl_json_parser IMPLEMENTATION.
         rt_json_tree = _parse( iv_json ).
       CATCH cx_sxml_error INTO lx_sxml.
         /mbtools/cx_ajson_error=>raise(
-        iv_msg      = |Json parsing error (SXML): { lx_sxml->get_text( ) }|
-        iv_location = '@PARSER' ).
+          iv_msg      = |Json parsing error (SXML): { lx_sxml->get_text( ) }|
+          iv_location = '@PARSER' ).
     ENDTRY.
   ENDMETHOD.
 
@@ -376,8 +376,8 @@ CLASS lcl_json_serializer IMPLEMENTATION.
     ENDCASE.
 
     IF mv_indent_step > 0
-      AND ( is_node-type = /mbtools/if_ajson=>node_type-array OR is_node-type = /mbtools/if_ajson=>node_type-object )
-      AND is_node-children > 0.
+        AND ( is_node-type = /mbtools/if_ajson=>node_type-array OR is_node-type = /mbtools/if_ajson=>node_type-object )
+        AND is_node-children > 0.
       mv_level = mv_level + 1.
       lv_item = lv_item && cl_abap_char_utilities=>newline.
     ENDIF.
@@ -551,9 +551,9 @@ CLASS lcl_json_to_abap IMPLEMENTATION.
     TRY.
         LOOP AT it_nodes ASSIGNING <n> USING KEY array_index.
           lr_ref = find_loc(
-          iv_append_tables = abap_true
-          iv_path = <n>-path
-          iv_name = <n>-name ).
+            iv_append_tables = abap_true
+            iv_path = <n>-path
+            iv_name = <n>-name ).
           ASSIGN lr_ref->* TO <value>.
           ASSERT sy-subrc = 0.
           DESCRIBE FIELD <value> TYPE lv_type.
@@ -572,12 +572,12 @@ CLASS lcl_json_to_abap IMPLEMENTATION.
                 DATA lv_d TYPE c LENGTH 2.
 
                 FIND FIRST OCCURRENCE OF REGEX '^(\d{4})-(\d{2})-(\d{2})(T|$)' "#EC NOTEXT
-                IN <n>-value
-                SUBMATCHES lv_y lv_m lv_d.
+                  IN <n>-value
+                  SUBMATCHES lv_y lv_m lv_d.
                 IF sy-subrc <> 0.
                   /mbtools/cx_ajson_error=>raise(
-                  iv_msg      = 'Unexpected date format'
-                  iv_location = <n>-path && <n>-name ).
+                    iv_msg      = 'Unexpected date format'
+                    iv_location = <n>-path && <n>-name ).
                 ENDIF.
                 CONCATENATE lv_y lv_m lv_d INTO <value>.
               ELSEIF lv_type = 'P' AND <n>-value IS NOT INITIAL.
@@ -588,26 +588,26 @@ CLASS lcl_json_to_abap IMPLEMENTATION.
             WHEN /mbtools/if_ajson=>node_type-object.
               IF NOT lv_type CO 'uv'.
                 /mbtools/cx_ajson_error=>raise(
-                iv_msg      = 'Expected structure'
-                iv_location = <n>-path && <n>-name ).
+                  iv_msg      = 'Expected structure'
+                  iv_location = <n>-path && <n>-name ).
               ENDIF.
             WHEN /mbtools/if_ajson=>node_type-array.
               IF NOT lv_type CO 'h'.
                 /mbtools/cx_ajson_error=>raise(
-                iv_msg      = 'Expected table'
-                iv_location = <n>-path && <n>-name ).
+                  iv_msg      = 'Expected table'
+                  iv_location = <n>-path && <n>-name ).
               ENDIF.
             WHEN OTHERS.
               /mbtools/cx_ajson_error=>raise(
-              iv_msg      = |Unexpected JSON type [{ <n>-type }]|
-              iv_location = <n>-path && <n>-name ).
+                iv_msg      = |Unexpected JSON type [{ <n>-type }]|
+                iv_location = <n>-path && <n>-name ).
           ENDCASE.
 
         ENDLOOP.
       CATCH cx_sy_conversion_no_number INTO lx.
         /mbtools/cx_ajson_error=>raise(
-        iv_msg      = |Source is not a number|
-        iv_location = <n>-path && <n>-name ).
+          iv_msg      = |Source is not a number|
+          iv_location = <n>-path && <n>-name ).
     ENDTRY.
 
   ENDMETHOD.
@@ -766,8 +766,8 @@ CLASS lcl_json_to_abap IMPLEMENTATION.
 
       CATCH cx_parameter_invalid_range cx_parameter_invalid_type.
         /mbtools/cx_ajson_error=>raise(
-        iv_msg      = 'Unexpected error calculating timestamp'
-        iv_location = is_path-path && is_path-name ).
+          iv_msg      = 'Unexpected error calculating timestamp'
+          iv_location = is_path-path && is_path-name ).
     ENDTRY.
 
     rv_result = lv_timestamp.
@@ -981,7 +981,7 @@ CLASS lcl_abap_to_json IMPLEMENTATION.
               ct_nodes = ct_nodes ).
 
         ELSEIF io_type->type_kind = cl_abap_typedescr=>typekind_oref
-          AND cl_abap_typedescr=>describe_by_object_ref( iv_data )->absolute_name = gv_ajson_absolute_type_name.
+            AND cl_abap_typedescr=>describe_by_object_ref( iv_data )->absolute_name = gv_ajson_absolute_type_name.
           convert_ajson(
             EXPORTING
               io_json   = iv_data
@@ -1256,7 +1256,7 @@ CLASS lcl_abap_to_json IMPLEMENTATION.
       ELSEIF iv_type = /mbtools/if_ajson=>node_type-number AND iv_data CN '0123456789. E+-'.
         /mbtools/cx_ajson_error=>raise( |Unexpected numeric value [{ iv_data }] @{ lv_prefix }| ).
       ELSEIF iv_type <> /mbtools/if_ajson=>node_type-string AND iv_type <> /mbtools/if_ajson=>node_type-boolean
-        AND iv_type <> /mbtools/if_ajson=>node_type-null AND iv_type <> /mbtools/if_ajson=>node_type-number.
+          AND iv_type <> /mbtools/if_ajson=>node_type-null AND iv_type <> /mbtools/if_ajson=>node_type-number.
         /mbtools/cx_ajson_error=>raise( |Unexpected type for value [{ iv_type },{ iv_data }] @{ lv_prefix }| ).
       ENDIF.
     ELSEIF io_type->type_kind CO 'bsI8PaeF'. " Numeric

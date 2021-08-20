@@ -81,6 +81,7 @@
     "if_in_if": true,
     "implement_methods": true,
     "in_statement_indentation": {
+      "blockStatements": 0,
       "exclude": [],
       "severity": "Error",
       "ignoreExceptions": false

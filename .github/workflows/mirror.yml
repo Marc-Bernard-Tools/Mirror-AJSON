@@ -23,4 +23,4 @@ jobs:
       uses: peter-evans/create-pull-request@v3
       with:
         title: Automatic Update
-        lables: automerge
+        labels: automerge

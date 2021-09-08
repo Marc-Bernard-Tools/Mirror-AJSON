@@ -11,4 +11,6 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
     versioning-strategy: increase
-    labels: automerge
+    labels: 
+      - "automerge"
+      - "dependencies"

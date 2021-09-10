@@ -1036,7 +1036,11 @@ CLASS lcl_abap_to_json IMPLEMENTATION.
       <n>-name  = is_prefix-name.
     ENDIF.
 
-    IF io_type->absolute_name = '\TYPE-POOL=ABAP\TYPE=ABAP_BOOL' OR io_type->absolute_name = '\TYPE=XFELD'.
+    IF io_type->absolute_name = '\TYPE-POOL=ABAP\TYPE=ABAP_BOOL'
+        OR io_type->absolute_name = '\TYPE=ABAP_BOOLEAN'
+        OR io_type->absolute_name = '\TYPE=XSDBOOLEAN'
+        OR io_type->absolute_name = '\TYPE=FLAG'
+        OR io_type->absolute_name = '\TYPE=XFELD'.
       <n>-type = /mbtools/if_ajson=>node_type-boolean.
       IF iv_data IS NOT INITIAL.
         <n>-value = 'true'.
@@ -1050,7 +1054,7 @@ CLASS lcl_abap_to_json IMPLEMENTATION.
       <n>-type = /mbtools/if_ajson=>node_type-number.
       <n>-value = |{ iv_data }|.
     ELSE.
-      /mbtools/cx_ajson_error=>raise( |Unexpected elemetary type [{
+      /mbtools/cx_ajson_error=>raise( |Unexpected elementary type [{
         io_type->type_kind }] @{ is_prefix-path && is_prefix-name }| ).
     ENDIF.
 

@@ -1,7 +1,7 @@
 INTERFACE /mbtools/if_ajson
   PUBLIC.
 
-  CONSTANTS version TYPE string VALUE 'v1.1.2'. "#EC NOTEXT
+  CONSTANTS version TYPE string VALUE 'v1.1.3'. "#EC NOTEXT
   CONSTANTS origin TYPE string VALUE 'https://github.com/sbcgua/ajson'. "#EC NOTEXT
   CONSTANTS license TYPE string VALUE 'MIT'. "#EC NOTEXT
 
@@ -46,6 +46,9 @@ INTERFACE /mbtools/if_ajson
 
   METHODS freeze.
   METHODS keep_item_order
+    RETURNING
+      VALUE(ri_json) TYPE REF TO /mbtools/if_ajson.
+  METHODS format_datetime
     RETURNING
       VALUE(ri_json) TYPE REF TO /mbtools/if_ajson.
 

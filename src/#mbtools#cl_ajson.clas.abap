@@ -7,6 +7,7 @@ CLASS /mbtools/cl_ajson DEFINITION
     INTERFACES /mbtools/if_ajson .
 
     ALIASES:
+      is_empty FOR /mbtools/if_ajson~is_empty,
       exists FOR /mbtools/if_ajson~exists,
       members FOR /mbtools/if_ajson~members,
       get FOR /mbtools/if_ajson~get,
@@ -459,6 +460,11 @@ CLASS /mbtools/cl_ajson IMPLEMENTATION.
         RETURN.
     ENDTRY.
 
+  ENDMETHOD.
+
+
+  METHOD /mbtools/if_ajson~is_empty.
+    rv_yes = boolc( lines( mt_json_tree ) = 0 ).
   ENDMETHOD.
 
 

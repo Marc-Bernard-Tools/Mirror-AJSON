@@ -122,6 +122,11 @@ CLASS lcl_app DEFINITION FINAL INHERITING FROM lcl_runner_base.
     METHODS to_abap_long_array RAISING cx_static_check.
     METHODS to_abap_complex RAISING cx_static_check.
 
+    METHODS set_same_level RAISING cx_static_check.
+    METHODS set_deep RAISING cx_static_check.
+    METHODS set_overwrite RAISING cx_static_check.
+    METHODS delete_tree RAISING cx_static_check.
+
     CLASS-METHODS main.
     METHODS prepare.
     METHODS prepare_parsed RAISING cx_static_check.
@@ -162,6 +167,8 @@ CLASS lcl_app DEFINITION FINAL INHERITING FROM lcl_runner_base.
     DATA mo_array TYPE REF TO /mbtools/if_ajson.
     DATA mo_long_array TYPE REF TO /mbtools/if_ajson.
     DATA mo_complex TYPE REF TO /mbtools/if_ajson.
+
+    DATA mv_deep_path TYPE string.
 
     TYPES:
       BEGIN OF ty_fragment,
@@ -249,6 +256,10 @@ CLASS lcl_app IMPLEMENTATION.
 
     prepare_complex( ).
     prepare_long_array( ).
+
+    DO 50 TIMES.
+      mv_deep_path = mv_deep_path && |/a{ sy-index }|.
+    ENDDO.
 
   ENDMETHOD.
 
@@ -457,6 +468,73 @@ CLASS lcl_app IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD set_same_level.
+
+    DATA li_json TYPE REF TO /mbtools/if_ajson.
+    li_json = /mbtools/cl_ajson=>create_empty( ).
+
+    DO 10 TIMES.
+      li_json->set(
+        iv_path = |/a{ sy-index }|
+        iv_val  = sy-index ).
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD set_deep.
+
+    DATA li_json TYPE REF TO /mbtools/if_ajson.
+    DATA lv_path TYPE string.
+    li_json = /mbtools/cl_ajson=>create_empty( ).
+
+    DO 10 TIMES.
+      lv_path = lv_path && |/a{ sy-index }|.
+      li_json->set(
+        iv_path = |{ lv_path }/x|
+        iv_val  = sy-index ).
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD set_overwrite.
+
+    DATA li_json TYPE REF TO /mbtools/if_ajson.
+    DATA lv_path TYPE string.
+
+    li_json = /mbtools/cl_ajson=>create_empty( ).
+
+    DO 10 TIMES.
+      lv_path = lv_path && |/a{ sy-index }|.
+    ENDDO.
+
+    li_json->set(
+      iv_path = lv_path
+      iv_val  = 'x' ).
+
+    DO 10 TIMES.
+      li_json->set(
+        iv_path = lv_path
+        iv_val  = sy-index ).
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD delete_tree.
+
+    DATA li_json TYPE REF TO /mbtools/if_ajson.
+    li_json = /mbtools/cl_ajson=>create_empty( ).
+
+    li_json->set(
+      iv_path = |/x{ mv_deep_path }|
+      iv_val  = '1' ).
+    li_json->set(
+      iv_path = |/y{ mv_deep_path }|
+      iv_val  = '1' ).
+
+    li_json->delete( '/x' ).
+
+  ENDMETHOD.
+
   METHOD main.
 
     DATA lo_app TYPE REF TO lcl_app.
@@ -495,6 +573,11 @@ CLASS lcl_app IMPLEMENTATION.
         lo_app->run(
           iv_method = 'to_abap_complex'
           iv_times  = 5 ).
+
+        lo_app->run( 'set_same_level' ).
+        lo_app->run( 'set_deep' ).
+        lo_app->run( 'set_overwrite' ).
+        lo_app->run( 'delete_tree' ).
 
       CATCH cx_root INTO lx.
         lv_tmp = lx->get_text( ).

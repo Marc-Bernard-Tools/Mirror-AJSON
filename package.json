@@ -5,7 +5,7 @@
   "description": "Mirror of (abap json - AJSON)[https://github.com/sbcgua/ajson] to /MBTOOLS/ namespace",
   "main": "index.js",
   "scripts": {
-    "clone": "git clone https://github.com/sbcgua/ajson input",
+    "clone": "git clone https://github.com/sbcgua/ajson input && rm input/src/core/package.devc.xml && rm input/src/libs/package.devc.xml && rm -rf input/src/perf && mv input/src/core/* input/src && mv input/src/libs/* input/src",
     "lint_result": "abaplint abaplint.json",
     "fix_result": "abaplint abaplint.json --fix",
     "rename": "abaplint abaplint_rename.json --rename && rm -f src/* && cp -r output/input/src/* src/",

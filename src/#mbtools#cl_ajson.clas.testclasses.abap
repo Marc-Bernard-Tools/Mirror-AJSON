@@ -85,6 +85,10 @@ CLASS ltcl_parser_test DEFINITION FINAL
     METHODS parse_date FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS parse_bare_values FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS parse_error FOR TESTING RAISING /mbtools/cx_ajson_error.
+    METHODS parse_input_xstring FOR TESTING RAISING /mbtools/cx_ajson_error.
+    METHODS parse_input_string FOR TESTING RAISING /mbtools/cx_ajson_error.
+    METHODS parse_input_string_table FOR TESTING RAISING /mbtools/cx_ajson_error.
+    METHODS parse_input_error FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS duplicate_key FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS non_json FOR TESTING RAISING /mbtools/cx_ajson_error.
 
@@ -246,6 +250,78 @@ CLASS ltcl_parser_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lt_act
       exp = mo_nodes->mt_nodes ).
+  ENDMETHOD.
+
+  METHOD parse_input_xstring.
+    mo_nodes->add( '                 |         |object |                        |  |1' ).
+    mo_nodes->add( '/                |string   |str    |abc                     |  |0' ).
+
+    DATA lt_act TYPE /mbtools/if_ajson_types=>ty_nodes_tt.
+    DATA lv_xstr TYPE xstring.
+
+    lv_xstr = '7B22737472696E67223A2022616263227D0A'.
+    lt_act = mo_cut->parse( lv_xstr ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lt_act
+      exp = mo_nodes->mt_nodes ).
+  ENDMETHOD.
+
+  METHOD parse_input_string.
+    mo_nodes->add( '                 |         |object |                        |  |1' ).
+    mo_nodes->add( '/                |string   |str    |abc                     |  |0' ).
+
+    DATA lt_act TYPE /mbtools/if_ajson_types=>ty_nodes_tt.
+    DATA lv_str TYPE string.
+
+    lv_str = `{"string": "abc"}`.
+    lt_act = mo_cut->parse( lv_str ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lt_act
+      exp = mo_nodes->mt_nodes ).
+  ENDMETHOD.
+
+  METHOD parse_input_string_table.
+    mo_nodes->add( '                 |         |object |                        |  |2' ).
+    mo_nodes->add( '/                |string   |str    |abc                     |  |0' ).
+    mo_nodes->add( '/                |number   |num    |123                     |  |0' ).
+
+    DATA lt_act TYPE /mbtools/if_ajson_types=>ty_nodes_tt.
+    DATA lt_json TYPE string_table.
+
+    INSERT `{` INTO TABLE lt_json.
+    INSERT `"string": "abc",` INTO TABLE lt_json.
+    INSERT `"number": 123` INTO TABLE lt_json.
+    INSERT `}` INTO TABLE lt_json.
+
+    lt_act = mo_cut->parse( lt_json ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lt_act
+      exp = mo_nodes->mt_nodes ).
+  ENDMETHOD.
+
+  METHOD parse_input_error.
+
+    DATA lo_cut TYPE REF TO lcl_json_parser.
+    DATA lx TYPE REF TO /mbtools/cx_ajson_error.
+    DATA lv_numc TYPE n LENGTH 10.
+    DATA lt_hashed TYPE HASHED TABLE OF string WITH UNIQUE DEFAULT KEY.
+
+    CREATE OBJECT lo_cut.
+
+    TRY.
+        lo_cut->parse( lv_numc ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH /mbtools/cx_ajson_error INTO lx.
+        cl_abap_unit_assert=>assert_not_initial( lx ).
+    ENDTRY.
+
+    TRY.
+        lo_cut->parse( lt_hashed ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH /mbtools/cx_ajson_error INTO lx.
+        cl_abap_unit_assert=>assert_not_initial( lx ).
+    ENDTRY.
+
   ENDMETHOD.
 
   METHOD sample_json.
@@ -1466,6 +1542,21 @@ CLASS ltcl_json_to_abap DEFINITION
     METHODS to_abap_str_to_packed
       FOR TESTING
       RAISING cx_static_check.
+    METHODS to_abap_compressed_stdrd
+      FOR TESTING
+      RAISING cx_static_check.
+    METHODS to_abap_compressed_stdrd_key
+      FOR TESTING
+      RAISING cx_static_check.
+    METHODS to_abap_compressed_sort
+      FOR TESTING
+      RAISING cx_static_check.
+    METHODS to_abap_compressed_sort_unique
+      FOR TESTING
+      RAISING cx_static_check.
+    METHODS to_abap_compressed_hash
+      FOR TESTING
+      RAISING cx_static_check.
 ENDCLASS.
 
 CLASS /mbtools/cl_ajson DEFINITION LOCAL FRIENDS ltcl_json_to_abap.
@@ -2189,6 +2280,171 @@ CLASS ltcl_json_to_abap IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD to_abap_compressed_stdrd.
+
+    TYPES: BEGIN OF ty_foo_bar,
+             foo TYPE string,
+             bar TYPE string,
+           END OF ty_foo_bar.
+
+    DATA lt_foo_bar TYPE STANDARD TABLE OF ty_foo_bar.
+    DATA ls_foo_bar LIKE LINE OF lt_foo_bar.
+    DATA lo_ajson TYPE REF TO /mbtools/cl_ajson.
+    DATA lv_json TYPE string.
+
+    lv_json =
+      '[' &&
+      '  {' &&
+      '    "foo": "abc",' &&
+      '    "bar": "123"' &&
+      '  },' &&
+      '  {' &&
+      '    "foo": "cde"' &&
+      '  }' &&
+      ']'.
+
+    lo_ajson = /mbtools/cl_ajson=>parse( lv_json ).
+
+    lo_ajson->to_abap( IMPORTING ev_container = lt_foo_bar ).
+
+    READ TABLE lt_foo_bar WITH KEY foo = 'cde' INTO ls_foo_bar.
+
+    cl_abap_unit_assert=>assert_initial( act = ls_foo_bar-bar ).
+
+  ENDMETHOD.
+
+  METHOD to_abap_compressed_stdrd_key.
+
+    TYPES: BEGIN OF ty_foo_bar,
+             foo TYPE string,
+             bar TYPE string,
+           END OF ty_foo_bar.
+
+    DATA lt_foo_bar TYPE STANDARD TABLE OF ty_foo_bar WITH NON-UNIQUE KEY foo.
+    DATA ls_foo_bar LIKE LINE OF lt_foo_bar.
+    DATA lo_ajson TYPE REF TO /mbtools/cl_ajson.
+    DATA lv_json TYPE string.
+
+    lv_json =
+      '[' &&
+      '  {' &&
+      '    "foo": "abc",' &&
+      '    "bar": "123"' &&
+      '  },' &&
+      '  {' &&
+      '    "foo": "cde"' &&
+      '  }' &&
+      ']'.
+
+    lo_ajson = /mbtools/cl_ajson=>parse( lv_json ).
+
+    lo_ajson->to_abap( IMPORTING ev_container = lt_foo_bar ).
+
+    READ TABLE lt_foo_bar WITH KEY foo = 'cde' INTO ls_foo_bar.
+
+    cl_abap_unit_assert=>assert_initial( act = ls_foo_bar-bar ).
+
+  ENDMETHOD.
+
+  METHOD to_abap_compressed_sort.
+
+    TYPES: BEGIN OF ty_foo_bar,
+             foo TYPE string,
+             bar TYPE string,
+           END OF ty_foo_bar.
+
+    DATA lt_foo_bar TYPE SORTED TABLE OF ty_foo_bar WITH NON-UNIQUE KEY foo.
+    DATA ls_foo_bar LIKE LINE OF lt_foo_bar.
+    DATA lo_ajson TYPE REF TO /mbtools/cl_ajson.
+    DATA lv_json TYPE string.
+
+    lv_json =
+      '[' &&
+      '  {' &&
+      '    "foo": "abc",' &&
+      '    "bar": "123"' &&
+      '  },' &&
+      '  {' &&
+      '    "foo": "cde"' &&
+      '  }' &&
+      ']'.
+
+    lo_ajson = /mbtools/cl_ajson=>parse( lv_json ).
+
+    lo_ajson->to_abap( IMPORTING ev_container = lt_foo_bar ).
+
+    READ TABLE lt_foo_bar WITH KEY foo = 'cde' INTO ls_foo_bar.
+
+    cl_abap_unit_assert=>assert_initial( act = ls_foo_bar-bar ).
+
+  ENDMETHOD.
+
+  METHOD to_abap_compressed_sort_unique.
+
+    TYPES: BEGIN OF ty_foo_bar,
+             foo TYPE string,
+             bar TYPE string,
+           END OF ty_foo_bar.
+
+    DATA lt_foo_bar TYPE SORTED TABLE OF ty_foo_bar WITH UNIQUE KEY foo.
+    DATA ls_foo_bar LIKE LINE OF lt_foo_bar.
+    DATA lo_ajson TYPE REF TO /mbtools/cl_ajson.
+    DATA lv_json TYPE string.
+
+    lv_json =
+      '[' &&
+      '  {' &&
+      '    "foo": "abc",' &&
+      '    "bar": "123"' &&
+      '  },' &&
+      '  {' &&
+      '    "foo": "cde"' &&
+      '  }' &&
+      ']'.
+
+    lo_ajson = /mbtools/cl_ajson=>parse( lv_json ).
+
+    lo_ajson->to_abap( IMPORTING ev_container = lt_foo_bar ).
+
+    READ TABLE lt_foo_bar WITH KEY foo = 'cde' INTO ls_foo_bar.
+
+    cl_abap_unit_assert=>assert_initial( act = ls_foo_bar-bar ).
+
+  ENDMETHOD.
+
+  METHOD to_abap_compressed_hash.
+
+    TYPES: BEGIN OF ty_foo_bar,
+             foo TYPE string,
+             bar TYPE string,
+           END OF ty_foo_bar.
+
+    DATA lt_foo_bar TYPE HASHED TABLE OF ty_foo_bar WITH UNIQUE KEY foo.
+    DATA ls_foo_bar LIKE LINE OF lt_foo_bar.
+    DATA lo_ajson TYPE REF TO /mbtools/cl_ajson.
+    DATA lv_json TYPE string.
+
+    lv_json =
+      '[' &&
+      '  {' &&
+      '    "foo": "abc",' &&
+      '    "bar": "123"' &&
+      '  },' &&
+      '  {' &&
+      '    "foo": "cde"' &&
+      '  }' &&
+      ']'.
+
+    lo_ajson = /mbtools/cl_ajson=>parse( lv_json ).
+
+    lo_ajson->to_abap( IMPORTING ev_container = lt_foo_bar ).
+
+    READ TABLE lt_foo_bar WITH KEY foo = 'cde' INTO ls_foo_bar.
+
+    cl_abap_unit_assert=>assert_initial( act = ls_foo_bar-bar ).
+
+  ENDMETHOD.
+
 ENDCLASS.
 
 **********************************************************************
@@ -2221,6 +2477,7 @@ CLASS ltcl_writer_test DEFINITION FINAL
     METHODS set_bool_tab FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS set_str FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS set_int FOR TESTING RAISING /mbtools/cx_ajson_error.
+    METHODS set_number FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS set_date FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS set_timestamp FOR TESTING RAISING /mbtools/cx_ajson_error.
     METHODS read_only FOR TESTING RAISING /mbtools/cx_ajson_error.
@@ -3057,6 +3314,27 @@ CLASS ltcl_writer_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_cut->mt_json_tree
+      exp = lo_nodes_exp->sorted( ) ).
+
+  ENDMETHOD.
+
+  METHOD set_number.
+
+    DATA lo_nodes_exp TYPE REF TO lcl_nodes_helper.
+    DATA li_json TYPE REF TO /mbtools/if_ajson.
+    DATA lv_p TYPE p LENGTH 5 DECIMALS 2 VALUE '123.45'.
+
+    li_json = /mbtools/cl_ajson=>create_empty( ).
+    CREATE OBJECT lo_nodes_exp.
+    lo_nodes_exp->add( '        |      |object |         ||1' ).
+    lo_nodes_exp->add( '/       |a     |num    |123.45   ||0' ).
+
+    li_json->set(
+      iv_path = '/a'
+      iv_val  = lv_p ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = li_json->mt_json_tree
       exp = lo_nodes_exp->sorted( ) ).
 
   ENDMETHOD.
@@ -4408,15 +4686,47 @@ CLASS ltcl_filter_test IMPLEMENTATION.
     lo_json->push(
       iv_path = '/'
       iv_val  = 'b' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'c' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'd' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'e' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'f' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'g' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'h' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'i' ).
+    lo_json->push(
+      iv_path = '/'
+      iv_val  = 'j' ).
 
     lo_json_filtered = /mbtools/cl_ajson=>create_from(
       ii_source_json = lo_json
       ii_filter      = me ).
 
     CREATE OBJECT lo_nodes_exp.
-    lo_nodes_exp->add( '       |      |array  |     | |2' ).
+    lo_nodes_exp->add( '       |      |array  |     | |10' ).
     lo_nodes_exp->add( '/      |1     |str    |a    |1|0' ).
     lo_nodes_exp->add( '/      |2     |str    |b    |2|0' ).
+    lo_nodes_exp->add( '/      |3     |str    |c    |3|0' ).
+    lo_nodes_exp->add( '/      |4     |str    |d    |4|0' ).
+    lo_nodes_exp->add( '/      |5     |str    |e    |5|0' ).
+    lo_nodes_exp->add( '/      |6     |str    |f    |6|0' ).
+    lo_nodes_exp->add( '/      |7     |str    |g    |7|0' ).
+    lo_nodes_exp->add( '/      |8     |str    |h    |8|0' ).
+    lo_nodes_exp->add( '/      |9     |str    |i    |9|0' ).
+    lo_nodes_exp->add( '/      |10    |str    |j    |10|0' ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_json_filtered->mt_json_tree
